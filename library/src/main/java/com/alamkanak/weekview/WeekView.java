@@ -712,7 +712,7 @@ public class WeekView extends View {
                         int currentHalfHourLineIndex = halfHourLineIndex * 4;
                         halfHourLines[currentHalfHourLineIndex] = start;
                         halfHourLines[++currentHalfHourLineIndex] = halfHourTop;
-                        halfHourLines[++currentHalfHourLineIndex] = startPixel + mWidthPerDay
+                        halfHourLines[++currentHalfHourLineIndex] = startPixel + mWidthPerDay;
                         halfHourLines[++currentHalfHourLineIndex] = top;
                         halfHourLineIndex++;
                     }
