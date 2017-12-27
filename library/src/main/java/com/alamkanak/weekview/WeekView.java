@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -420,7 +419,6 @@ public class WeekView extends View {
         mHalfHourSeparatorPaint = new Paint();
         mHalfHourSeparatorPaint.setStyle(Paint.Style.STROKE);
         mHalfHourSeparatorPaint.setStrokeWidth(mHalfHourSeparatorHeight);
-        mHalfHourSeparatorPaint.setPathEffect(new DashPathEffect(new float[] {4,4}, 0));
         mHalfHourSeparatorPaint.setColor(mHalfHourSeparatorColor);
 
         // Prepare the "now" line color paint
