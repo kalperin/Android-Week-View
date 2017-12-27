@@ -72,6 +72,7 @@ public class WeekView extends View {
     private float mWidthPerDay;
     private Paint mDayBackgroundPaint;
     private Paint mHourSeparatorPaint;
+    private Paint mHalfHourSeparatorPaint;
     private float mHeaderMarginBottom;
     private Paint mTodayBackgroundPaint;
     private Paint mFutureBackgroundPaint;
@@ -121,8 +122,10 @@ public class WeekView extends View {
     private int mNowLineColor = Color.rgb(102, 102, 102);
     private int mNowLineThickness = 5;
     private int mHourSeparatorColor = Color.rgb(230, 230, 230);
+    private int mHalfHourSeparatorColor = Color.rgb(230, 230, 230);
     private int mTodayBackgroundColor = Color.rgb(239, 247, 254);
     private int mHourSeparatorHeight = 2;
+    private int mHalfHourSeparatorHeight = 0;
     private int mTodayHeaderTextColor = Color.rgb(39, 137, 228);
     private int mEventTextSize = 12;
     private int mEventTextColor = Color.BLACK;
@@ -334,8 +337,10 @@ public class WeekView extends View {
             mNowLineColor = a.getColor(R.styleable.WeekView_nowLineColor, mNowLineColor);
             mNowLineThickness = a.getDimensionPixelSize(R.styleable.WeekView_nowLineThickness, mNowLineThickness);
             mHourSeparatorColor = a.getColor(R.styleable.WeekView_hourSeparatorColor, mHourSeparatorColor);
+            mHalfHourSeparatorColor = a.getColor(R.styleable.WeekView_halfHourSeparatorColor, mHalfHourSeparatorColor);
             mTodayBackgroundColor = a.getColor(R.styleable.WeekView_todayBackgroundColor, mTodayBackgroundColor);
             mHourSeparatorHeight = a.getDimensionPixelSize(R.styleable.WeekView_hourSeparatorHeight, mHourSeparatorHeight);
+            mHalfHourSeparatorHeight = a.getDimensionPixelSize(R.styleable.WeekView_halfHourSeparatorHeight, mHalfHourSeparatorHeight);
             mTodayHeaderTextColor = a.getColor(R.styleable.WeekView_todayHeaderTextColor, mTodayHeaderTextColor);
             mEventTextSize = a.getDimensionPixelSize(R.styleable.WeekView_eventTextSize, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mEventTextSize, context.getResources().getDisplayMetrics()));
             mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor, mEventTextColor);
@@ -409,6 +414,12 @@ public class WeekView extends View {
         mHourSeparatorPaint.setStyle(Paint.Style.STROKE);
         mHourSeparatorPaint.setStrokeWidth(mHourSeparatorHeight);
         mHourSeparatorPaint.setColor(mHourSeparatorColor);
+
+        // Prepare hour separator color paint.
+        mHalfHourSeparatorPaint = new Paint();
+        mHalfHourSeparatorPaint.setStyle(Paint.Style.STROKE);
+        mHalfHourSeparatorPaint.setStrokeWidth(mHalfHourSeparatorHeight);
+        mHalfHourSeparatorPaint.setColor(mHalfHourSeparatorColor);
 
         // Prepare the "now" line color paint
         mNowLinePaint = new Paint();
@@ -616,6 +627,7 @@ public class WeekView extends View {
                 mHeaderMarginBottom) / mHourHeight) + 1;
         lineCount = (lineCount) * (mNumberOfVisibleDays+1);
         float[] hourLines = new float[lineCount * 4];
+        float[] halfHourLines = new float[lineCount * 4];
 
         // Clear the cache for event rectangles.
         if (mEventRects != null) {
@@ -681,8 +693,9 @@ public class WeekView extends View {
                 }
             }
 
-            // Prepare the separator lines for hours.
+            // Prepare the separator lines for hours AND half hours.
             int i = 0;
+            int halfHourLineIndex = 0;
             for (int hourNumber = 0; hourNumber < 24; hourNumber++) {
                 float top = mHeaderHeight + mHeaderRowPadding * 2 + mCurrentOrigin.y + mHourHeight * hourNumber + mTimeTextHeight/2 + mHeaderMarginBottom;
                 if (top > mHeaderHeight + mHeaderRowPadding * 2 + mTimeTextHeight/2 + mHeaderMarginBottom - mHourSeparatorHeight && top < getHeight() && startPixel + mWidthPerDay - start > 0){
@@ -691,11 +704,30 @@ public class WeekView extends View {
                     hourLines[i * 4 + 2] = startPixel + mWidthPerDay;
                     hourLines[i * 4 + 3] = top;
                     i++;
+
+
+                    //and now the half hours
+                    if (mHalfHourSeparatorHeight > 0) {
+                        float halfHourTop = top + + Math.round(mHourHeight / 2);
+                        int currentHalfHourLineIndex = halfHourLineIndex * 4;
+                        halfHourLines[currentHalfHourLineIndex] = start;
+                        halfHourLines[++currentHalfHourLineIndex] = halfHourTop;
+                        halfHourLines[++currentHalfHourLineIndex] = startPixel + mWidthPerDay
+                        halfHourLines[++currentHalfHourLineIndex] = top;
+                        halfHourLineIndex++;
+                    }
+
                 }
+
             }
 
             // Draw the lines for hours.
             canvas.drawLines(hourLines, mHourSeparatorPaint);
+
+            // Draw the lines for HALF hours.
+            canvas.drawLines(halfHourLines, mHalfHourSeparatorPaint);
+
+
 
             // Draw the events.
             drawEvents(day, startPixel, canvas);
@@ -1478,6 +1510,12 @@ public class WeekView extends View {
         invalidate();
     }
 
+    public void setHalfHourSeparatorColor(int color) {
+        mHalfHourSeparatorColor = color;
+        mHalfHourSeparatorPaint.setColor(mHalfHourSeparatorColor);
+        invalidate();
+    }
+
     public int getTodayBackgroundColor() {
         return mTodayBackgroundColor;
     }
@@ -1495,6 +1533,12 @@ public class WeekView extends View {
     public void setHourSeparatorHeight(int hourSeparatorHeight) {
         mHourSeparatorHeight = hourSeparatorHeight;
         mHourSeparatorPaint.setStrokeWidth(mHourSeparatorHeight);
+        invalidate();
+    }
+
+    public void setHalfHourSeparatorHeight(int height) {
+        mHalfHourSeparatorHeight = hourSeparatorHeight;
+        mHalfHourSeparatorPaint.setStrokeWidth(mHalfHourSeparatorHeight);
         invalidate();
     }
 

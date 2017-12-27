@@ -24,9 +24,11 @@
         <attr name="headerRowBackgroundColor" format="color"/>
         <attr name="dayBackgroundColor" format="color"/>
         <attr name="hourSeparatorColor" format="color"/>
+        <attr name="halfHourSeparatorColor" format="color"/>
         <attr name="todayBackgroundColor" format="color"/>
         <attr name="todayHeaderTextColor" format="color"/>
         <attr name="hourSeparatorHeight" format="dimension"/>
+        <attr name="halfHourSeparatorHeight" format="dimension"/>
         <attr name="eventTextColor" format="color"/>
         <attr name="eventPadding" format="dimension"/>
         <attr name="headerColumnBackground" format="color"/>
