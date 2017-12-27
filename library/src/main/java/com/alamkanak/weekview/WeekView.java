@@ -1537,7 +1537,7 @@ public class WeekView extends View {
     }
 
     public void setHalfHourSeparatorHeight(int height) {
-        mHalfHourSeparatorHeight = hourSeparatorHeight;
+        mHalfHourSeparatorHeight = height;
         mHalfHourSeparatorPaint.setStrokeWidth(mHalfHourSeparatorHeight);
         invalidate();
     }
