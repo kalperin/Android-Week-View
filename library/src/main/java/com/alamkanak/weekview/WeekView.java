@@ -554,27 +554,20 @@ public class WeekView extends View {
             if (top < getHeight()) canvas.drawText(time, mTimeTextWidth + mHeaderColumnPadding, top + mTimeTextHeight, mTimeTextPaint);
 
             //also draw half hour titles
-            if (mHalfHourSeparatorHeight > 0) {
-                float halfHourTop = top + Math.round(mHourHeight / 2);
+            float halfHourTop = top + Math.round(mHourHeight / 2);
 
-                if (halfHourTop < getHeight()) {
-                    float hour = new Integer(i).floatValue() + 0.5f;
-                    DateTimeInterpreter dateTimeInterpreter = getDateTimeInterpreter();
-                    if (dateTimeInterpreter instanceof DateFractionalTimeInterpreter) {
-                        DateFractionalTimeInterpreter dateFractionalTimeInterpreter = (DateFractionalTimeInterpreter)dateTimeInterpreter;
-                        String halfHourTime = dateFractionalTimeInterpreter.interpretTime(hour);
-                        if (halfHourTime != null) {
-                            canvas.drawText(halfHourTime, mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
-                        } else {
-                            canvas.drawText("null", mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
-                        }
-                    } else {
-                        canvas.drawText("class: " + dateTimeInterpreter.getClass().getSimpleName(), mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
-
+            if (halfHourTop < getHeight()) {
+                float hour = new Integer(i).floatValue() + 0.5f;
+                DateTimeInterpreter dateTimeInterpreter = getDateTimeInterpreter();
+                if (dateTimeInterpreter instanceof DateFractionalTimeInterpreter) {
+                    DateFractionalTimeInterpreter dateFractionalTimeInterpreter = (DateFractionalTimeInterpreter)dateTimeInterpreter;
+                    String halfHourTime = dateFractionalTimeInterpreter.interpretTime(hour);
+                    if (halfHourTime != null) {
+                        canvas.drawText(halfHourTime, mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
                     }
                 }
-
             }
+
         }
     }
 
@@ -1353,7 +1346,7 @@ public class WeekView extends View {
      */
     public DateTimeInterpreter getDateTimeInterpreter() {
         if (mDateTimeInterpreter == null) {
-            mDateTimeInterpreter = new DateFractionalTimeInterpreter() {
+            mDateTimeInterpreter = new DateTimeInterpreter() {
                 @Override
                 public String interpretDate(Calendar date) {
                     try {
@@ -1367,27 +1360,17 @@ public class WeekView extends View {
 
                 @Override
                 public String interpretTime(int hour) {
-                    return interpretTime(new Integer(hour).floatValue());
-                }
-
-                @Override
-                public String interpretTime(float hour) {
-                    int hourOfDay = new Double(Math.floor(new Float(hour).doubleValue())).intValue();
-                    float fractionOfHour = hour - hourOfDay;
-                    int minutesPerHour = 60;
-                    int minute = new Double(Math.floor(fractionOfHour * minutesPerHour)).intValue();
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    calendar.set(Calendar.MINUTE, minute);
+                    calendar.set(Calendar.HOUR_OF_DAY, hour);
+                    calendar.set(Calendar.MINUTE, 0);
 
                     try {
                         SimpleDateFormat sdf = DateFormat.is24HourFormat(getContext()) ? new SimpleDateFormat("HH:mm", Locale.getDefault()) : new SimpleDateFormat("hh a", Locale.getDefault());
                         return sdf.format(calendar.getTime());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        return "error: "+ e.getClass().getSimpleName();
+                        return "";
                     }
-
                 }
 
             };
