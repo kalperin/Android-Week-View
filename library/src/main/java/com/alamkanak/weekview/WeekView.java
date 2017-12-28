@@ -560,14 +560,12 @@ public class WeekView extends View {
                 if (halfHourTop < getHeight()) {
                     float hour = new Integer(i).floatValue() + 0.5f;
                     DateTimeInterpreter dateTimeInterpreter = getDateTimeInterpreter();
-                    if (dateTimeInterpreter.getClass().isAssignableFrom(DateFractionalTimeInterpreter.class)) {
+                    if (dateTimeInterpreter instanceof DateFractionalTimeInterpreter) {
                         DateFractionalTimeInterpreter dateFractionalTimeInterpreter = (DateFractionalTimeInterpreter)dateTimeInterpreter;
                         String halfHourTime = dateFractionalTimeInterpreter.interpretTime(hour);
                         if (halfHourTime != null) {
                             canvas.drawText(halfHourTime, mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
                         }
-                    } else {
-                        canvas.drawText("na", mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
                     }
                 }
 
@@ -1382,7 +1380,7 @@ public class WeekView extends View {
                         return sdf.format(calendar.getTime());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        return e.getClass().getSimpleName();
+                        return "";
                     }
 
                 }
