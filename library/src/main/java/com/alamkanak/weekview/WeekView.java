@@ -566,6 +566,9 @@ public class WeekView extends View {
                         if (halfHourTime != null) {
                             canvas.drawText(halfHourTime, mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
                         }
+                    } else {
+                        canvas.drawText(dateTimeInterpreter.getClass().getSimpleName(), mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
+
                     }
                 }
 
