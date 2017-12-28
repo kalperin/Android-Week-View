@@ -552,6 +552,20 @@ public class WeekView extends View {
             if (time == null)
                 throw new IllegalStateException("A DateTimeInterpreter must not return null time");
             if (top < getHeight()) canvas.drawText(time, mTimeTextWidth + mHeaderColumnPadding, top + mTimeTextHeight, mTimeTextPaint);
+
+            //also draw half hour titles
+            if (mHalfHourSeparatorHeight > 0) {
+                float halfHourTop = top + Math.round(mHourHeight / 2);
+
+                if (halfHourTop < getHeight()) {
+                    float hour = i + 0.5f;
+                    String halfHourTime = getDateTimeInterpreter().interpretTime(hour);
+                    if (halfHourTime != null) {
+                        canvas.drawText(halfHourTime, mTimeTextWidth + mHeaderColumnPadding, top + mTimeTextHeight, mTimeTextPaint);
+                    }
+                }
+
+            }
         }
     }
 
@@ -708,7 +722,7 @@ public class WeekView extends View {
 
                     //and now the half hours
                     if (mHalfHourSeparatorHeight > 0) {
-                        float halfHourTop = top + + Math.round(mHourHeight / 2);
+                        float halfHourTop = top + Math.round(mHourHeight / 2);
                         int currentHalfHourLineIndex = halfHourLineIndex * 4;
                         halfHourLines[currentHalfHourLineIndex] = start;
                         halfHourLines[++currentHalfHourLineIndex] = halfHourTop;
@@ -1344,9 +1358,18 @@ public class WeekView extends View {
 
                 @Override
                 public String interpretTime(int hour) {
+                    return interpretTime(new Integer(hour).floatValue());
+                }
+
+                @Override
+                public String interpretTime(float hour) {
+                    int hourOfDay = new Double(Math.floor(new Float(hour).doubleValue())).intValue();
+                    float fractionOfHour = hour - hourOfDay;
+                    int minutesPerHour = 60;
+                    int minute = Math.round(fractionOfHour * minutesPerHour);
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.HOUR_OF_DAY, hour);
-                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calendar.set(Calendar.MINUTE, minute);
 
                     try {
                         SimpleDateFormat sdf = DateFormat.is24HourFormat(getContext()) ? new SimpleDateFormat("HH:mm", Locale.getDefault()) : new SimpleDateFormat("hh a", Locale.getDefault());
@@ -1355,7 +1378,9 @@ public class WeekView extends View {
                         e.printStackTrace();
                         return "";
                     }
+
                 }
+
             };
         }
         return mDateTimeInterpreter;
