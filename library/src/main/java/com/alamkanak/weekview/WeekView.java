@@ -1383,7 +1383,7 @@ public class WeekView extends View {
                         return sdf.format(calendar.getTime());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        return "";
+                        return e.getClass().getSimpleName();
                     }
 
                 }
