@@ -566,6 +566,8 @@ public class WeekView extends View {
                         if (halfHourTime != null) {
                             canvas.drawText(halfHourTime, mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
                         }
+                    } else {
+                        canvas.drawText("na", mTimeTextWidth + mHeaderColumnPadding, halfHourTop + mTimeTextHeight, mTimeTextPaint);
                     }
                 }
 
@@ -1370,7 +1372,7 @@ public class WeekView extends View {
                     int hourOfDay = new Double(Math.floor(new Float(hour).doubleValue())).intValue();
                     float fractionOfHour = hour - hourOfDay;
                     int minutesPerHour = 60;
-                    int minute = Math.round(fractionOfHour * minutesPerHour);
+                    int minute = new Double(Math.floor(fractionOfHour * minutesPerHour)).intValue();
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     calendar.set(Calendar.MINUTE, minute);
@@ -1380,7 +1382,7 @@ public class WeekView extends View {
                         return sdf.format(calendar.getTime());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        return "";
+                        return e.getClass().getSimpleName();
                     }
 
                 }
