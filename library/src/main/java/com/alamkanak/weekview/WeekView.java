@@ -721,19 +721,18 @@ public class WeekView extends View {
                     hourLines[i * 4 + 3] = top;
                     i++;
 
-
-                    //and now the half hours
-                    if (mHalfHourSeparatorHeight > 0) {
-                        float halfHourTop = top + Math.round(mHourHeight / 2);
-                        int currentHalfHourLineIndex = halfHourLineIndex * 4;
-                        halfHourLines[currentHalfHourLineIndex] = start;
-                        halfHourLines[++currentHalfHourLineIndex] = halfHourTop;
-                        halfHourLines[++currentHalfHourLineIndex] = startPixel + mWidthPerDay;
-                        halfHourLines[++currentHalfHourLineIndex] = halfHourTop;
-                        halfHourLineIndex++;
-                    }
-
                 }
+                //and now the half hours
+                float halfHourTop = top + Math.round(mHourHeight / 2);
+                if (mHalfHourSeparatorHeight > 0 && halfHourTop > mHeaderHeight + mHeaderRowPadding * 2 + mTimeTextHeight/2 + mHeaderMarginBottom - mHourSeparatorHeight && halfHourTop < getHeight() && startPixel + mWidthPerDay - start > 0) {
+                    int currentHalfHourLineIndex = halfHourLineIndex * 4;
+                    halfHourLines[currentHalfHourLineIndex] = start;
+                    halfHourLines[++currentHalfHourLineIndex] = halfHourTop;
+                    halfHourLines[++currentHalfHourLineIndex] = startPixel + mWidthPerDay;
+                    halfHourLines[++currentHalfHourLineIndex] = halfHourTop;
+                    halfHourLineIndex++;
+                }
+
 
             }
 
